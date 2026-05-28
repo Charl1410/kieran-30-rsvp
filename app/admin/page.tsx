@@ -6,10 +6,15 @@ import { supabase } from "@/lib/supabase";
 type Guest = {
   id: number;
   name: string;
-  email: string;
   rsvp_status: string;
   plus_one_name: string;
   dietary_notes: string;
+};
+
+const statusPillClass: Record<string, string> = {
+  yes: "bg-emerald-100 text-emerald-800",
+  maybe: "bg-amber-100 text-amber-900",
+  no: "bg-red-100 text-red-800",
 };
 
 export default function AdminPage() {
@@ -138,24 +143,56 @@ export default function AdminPage() {
         className="w-full mb-6 p-4 rounded-xl border bg-white text-black placeholder:text-gray-500"
       />
 
-      <div className="grid gap-4">
-        {filteredGuests.map((guest) => (
-          <div key={guest.id} className="bg-white p-6 rounded-xl shadow text-black">
-            <div className="flex justify-between gap-4">
-              <h2 className="text-2xl font-semibold">{guest.name}</h2>
-
-              <span className="rounded-full bg-gray-100 px-3 py-1 text-sm text-black">
-                {guest.rsvp_status}
-              </span>
-            </div>
-
-            {guest.email && <p className="mt-2 text-gray-800">Email: {guest.email}</p>}
-            {guest.plus_one_name?.trim() && (
-              <p className="mt-2 text-gray-800">Plus one: {guest.plus_one_name}</p>
+      <div className="overflow-x-auto rounded-xl bg-white shadow">
+        <table className="w-full min-w-[520px] text-left text-sm text-black">
+          <thead>
+            <tr className="border-b border-gray-200 bg-gray-50 text-xs uppercase tracking-wide text-gray-600">
+              <th className="px-4 py-3 font-medium">Name</th>
+              <th className="px-4 py-3 font-medium">Status</th>
+              <th className="px-4 py-3 font-medium">Plus one</th>
+              <th className="px-4 py-3 font-medium">Dietary</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredGuests.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={4}
+                  className="px-4 py-8 text-center text-gray-500"
+                >
+                  No guests match your search.
+                </td>
+              </tr>
+            ) : (
+              filteredGuests.map((guest) => (
+                <tr
+                  key={guest.id}
+                  className="border-b border-gray-100 last:border-0 hover:bg-gray-50"
+                >
+                  <td className="px-4 py-2.5 font-semibold whitespace-nowrap">
+                    {guest.name}
+                  </td>
+                  <td className="px-4 py-2.5 whitespace-nowrap">
+                    <span
+                      className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium capitalize ${
+                        statusPillClass[guest.rsvp_status] ??
+                        "bg-gray-100 text-gray-700"
+                      }`}
+                    >
+                      {guest.rsvp_status}
+                    </span>
+                  </td>
+                  <td className="px-4 py-2.5 text-gray-700">
+                    {guest.plus_one_name?.trim() || "—"}
+                  </td>
+                  <td className="px-4 py-2.5 text-gray-700 max-w-xs truncate" title={guest.dietary_notes || undefined}>
+                    {guest.dietary_notes || "—"}
+                  </td>
+                </tr>
+              ))
             )}
-            {guest.dietary_notes && <p className="mt-2 text-gray-800">Dietary notes: {guest.dietary_notes}</p>}
-          </div>
-        ))}
+          </tbody>
+        </table>
       </div>
     </main>
   );

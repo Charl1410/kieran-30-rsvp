@@ -5,7 +5,6 @@ import { supabase } from "@/lib/supabase";
 
 export default function RSVPForm() {
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
   const [status, setStatus] = useState("yes");
   const [plusOneName, setPlusOneName] = useState("");
   const [dietaryNotes, setDietaryNotes] = useState("");
@@ -15,7 +14,6 @@ export default function RSVPForm() {
     const { error } = await supabase.from("guests").insert([
       {
         name,
-        email,
         rsvp_status: status,
         plus_one_name: plusOneName,
         dietary_notes: dietaryNotes,
@@ -29,7 +27,6 @@ export default function RSVPForm() {
     } else {
       setMessage("Thank you — your RSVP has been received.");
       setName("");
-      setEmail("");
       setStatus("yes");
       setPlusOneName("");
       setDietaryNotes("");
@@ -48,7 +45,7 @@ export default function RSVPForm() {
           </p>
 
           <div className="relative z-10">
-            <p className="font-[family-name:var(--font-great-vibes)] text-6xl leading-none gold-gradient-text sm:text-7xl">
+            <p className="h-20 font-[family-name:var(--font-great-vibes)] text-6xl leading-none gold-gradient-text sm:text-7xl">
               thirty
             </p>
 
@@ -56,7 +53,7 @@ export default function RSVPForm() {
               KIERAN&apos;S BIRTHDAY
             </h1>
 
-            <p className="m-10 text-[0.65rem] font-light tracking-[0.28em] text-white/90 uppercase">
+            <p className="m-10 text-[1rem] font-light tracking-[0.28em] text-white/90 uppercase">
               You are invited to celebrate
             </p>
 
@@ -66,7 +63,8 @@ export default function RSVPForm() {
                 Saturday
               </div>
               <div className="flex flex-1 flex-col items-center justify-center border-r border-gold/40 px-2 py-3 leading-relaxed">
-                <span>July 18</span>
+                <span>July </span>
+                <span className="font-bold text-[1.5rem]">18</span>
                 <span>2026</span>
               </div>
               <div className="flex flex-1 items-center justify-center px-2 py-3">
@@ -75,9 +73,10 @@ export default function RSVPForm() {
             </div>
 
 
-            <p className="m-8 text-[0.65rem] tracking-[0.28em] text-white/80 uppercase">
+            <p className="mt-8 text-[1 rem] tracking-[0.28em] text-white/80 uppercase">
               Please RSVP below
             </p>
+            <p className="text-xs mt-2 mb-8 text-white/80"> Please leave fields blank if not applicable</p>
 
             <div className="space-y-1 text-left">
               <input
@@ -85,14 +84,6 @@ export default function RSVPForm() {
                 placeholder="Your name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-              />
-
-              <input
-                className="rsvp-field"
-                placeholder="Email address"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
               />
 
               <select

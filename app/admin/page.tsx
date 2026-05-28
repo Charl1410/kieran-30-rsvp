@@ -78,6 +78,12 @@ export default function AdminPage() {
   const noCount = guests.filter((g) => g.rsvp_status === "no").length;
   const maybeCount = guests.filter((g) => g.rsvp_status === "maybe").length;
 
+  const attendingGuests = guests.filter((g) => g.rsvp_status === "yes");
+  const plusOneCount = attendingGuests.filter((g) =>
+    Boolean(g.plus_one_name?.trim())
+  ).length;
+  const totalGuestCount = attendingGuests.length + plusOneCount;
+
   return (
     <main className="min-h-screen bg-gray-100 p-8 text-black">
       <h1 className="text-4xl font-bold mb-2">RSVP Dashboard</h1>
@@ -86,25 +92,41 @@ export default function AdminPage() {
         Manage birthday party responses.
       </p>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
         <div className="bg-white p-5 rounded-xl shadow text-black">
-          <p className="text-gray-600">Total</p>
+          <p className="text-gray-600 text-sm">RSVPs</p>
           <p className="text-3xl font-bold">{guests.length}</p>
+          <p className="text-xs text-gray-500 mt-1">Form responses</p>
         </div>
 
         <div className="bg-white p-5 rounded-xl shadow text-black">
-          <p className="text-gray-600">Yes</p>
+          <p className="text-gray-600 text-sm">Yes</p>
           <p className="text-3xl font-bold">{yesCount}</p>
+          <p className="text-xs text-gray-500 mt-1">Attending</p>
         </div>
 
         <div className="bg-white p-5 rounded-xl shadow text-black">
-          <p className="text-gray-600">No</p>
+          <p className="text-gray-600 text-sm">No</p>
           <p className="text-3xl font-bold">{noCount}</p>
         </div>
 
         <div className="bg-white p-5 rounded-xl shadow text-black">
-          <p className="text-gray-600">Maybe</p>
+          <p className="text-gray-600 text-sm">Maybe</p>
           <p className="text-3xl font-bold">{maybeCount}</p>
+        </div>
+
+        <div className="bg-white p-5 rounded-xl shadow text-black">
+          <p className="text-gray-600 text-sm">Plus ones</p>
+          <p className="text-3xl font-bold">{plusOneCount}</p>
+          <p className="text-xs text-gray-500 mt-1">With attending guests</p>
+        </div>
+
+        <div className="bg-white p-5 rounded-xl shadow text-black ring-2 ring-black/10">
+          <p className="text-gray-600 text-sm">Total guests</p>
+          <p className="text-3xl font-bold">{totalGuestCount}</p>
+          <p className="text-xs text-gray-500 mt-1">
+            {yesCount} attending + {plusOneCount} plus ones
+          </p>
         </div>
       </div>
 
@@ -128,7 +150,9 @@ export default function AdminPage() {
             </div>
 
             {guest.email && <p className="mt-2 text-gray-800">Email: {guest.email}</p>}
-            {guest.plus_one_name && <p className="mt-2 text-gray-800">Plus one: {guest.plus_one_name}</p>}
+            {guest.plus_one_name?.trim() && (
+              <p className="mt-2 text-gray-800">Plus one: {guest.plus_one_name}</p>
+            )}
             {guest.dietary_notes && <p className="mt-2 text-gray-800">Dietary notes: {guest.dietary_notes}</p>}
           </div>
         ))}

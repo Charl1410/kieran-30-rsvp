@@ -71,6 +71,10 @@ export default function RSVPForm() {
                 6 &apos;o clock
               </div>
             </div>
+            <div className="mt-8 text-xs tracking-[0.28em] text-white/80 uppercase">
+              <p>THE BEECH HOUSE TEEPEE</p>
+              <p>727 Warwick Rd, Solihull B91 3DA</p>
+            </div>
 
 
             <p className="mt-8 text-[1 rem] tracking-[0.28em] text-white/80 uppercase">

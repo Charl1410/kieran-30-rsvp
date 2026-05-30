@@ -22,6 +22,7 @@ export default function AdminPage() {
   const [isAuthed, setIsAuthed] = useState(false);
   const [guests, setGuests] = useState<Guest[]>([]);
   const [search, setSearch] = useState("");
+  const [deletingId, setDeletingId] = useState<number | null>(null);
 
   const handleLogin = () => {
     if (password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD) {
@@ -49,6 +50,26 @@ export default function AdminPage() {
 
     fetchGuests();
   }, [isAuthed]);
+
+  const handleDelete = async (guest: Guest) => {
+    const confirmed = window.confirm(
+      `Delete RSVP for "${guest.name}"? This cannot be undone.`
+    );
+    if (!confirmed) return;
+
+    setDeletingId(guest.id);
+
+    const { error } = await supabase.from("guests").delete().eq("id", guest.id);
+
+    if (error) {
+      console.error(error);
+      alert("Could not delete this RSVP. Please try again.");
+    } else {
+      setGuests((current) => current.filter((g) => g.id !== guest.id));
+    }
+
+    setDeletingId(null);
+  };
 
   if (!isAuthed) {
     return (
@@ -151,13 +172,14 @@ export default function AdminPage() {
               <th className="px-4 py-3 font-medium">Status</th>
               <th className="px-4 py-3 font-medium">Plus one</th>
               <th className="px-4 py-3 font-medium">Dietary</th>
+              <th className="px-4 py-3 font-medium w-24">Actions</th>
             </tr>
           </thead>
           <tbody>
             {filteredGuests.length === 0 ? (
               <tr>
                 <td
-                  colSpan={4}
+                  colSpan={5}
                   className="px-4 py-8 text-center text-gray-500"
                 >
                   No guests match your search.
@@ -187,6 +209,16 @@ export default function AdminPage() {
                   </td>
                   <td className="px-4 py-2.5 text-gray-700 max-w-xs truncate" title={guest.dietary_notes || undefined}>
                     {guest.dietary_notes || "—"}
+                  </td>
+                  <td className="px-4 py-2.5 whitespace-nowrap">
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(guest)}
+                      disabled={deletingId === guest.id}
+                      className="rounded-lg border border-red-200 px-2.5 py-1 text-xs font-medium text-red-700 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      {deletingId === guest.id ? "Deleting…" : "Delete"}
+                    </button>
                   </td>
                 </tr>
               ))
